@@ -18,6 +18,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1  # Change this to your desired AWS region
 
+      - name: Run Smoke Test
+        run: |
+          echo "Testing http://googleqazqwer.com"
+          curl --fail --connect-timeout 10 --max-time 20 http://googleqazqwer.com || exit 1
+
       - name: Create CloudFormation Stack
         run: |
           aws cloudformation create-stack --stack-name myteststack --template-body file://ec2.yaml
