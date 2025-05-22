@@ -27,7 +27,7 @@ jobs:
         run: |
           IP=$(aws cloudformation describe-stacks \
             --stack-name myteststack \
-            --query "Stacks[0].Outputs[?OutputKey=='PublicIP'].OutputValue" \
+            --query "Stacks[0].Outputs[?OutputKey=='InstancePublicIp'].OutputValue" \
             --output text)
           echo "PUBLIC_IP=$IP" >> $GITHUB_ENV
 
