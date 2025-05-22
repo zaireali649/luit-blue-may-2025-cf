@@ -18,16 +18,20 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1  # Change this to your desired AWS region
 
-      - name: Run Smoke Test
-        run: |
-          echo "Testing http://googleqazqwer.com"
-          curl --fail --connect-timeout 10 --max-time 20 http://googleqazqwer.com || exit 1
-
       - name: Create CloudFormation Stack
         run: |
           aws cloudformation create-stack --stack-name myteststack --template-body file://ec2.yaml
 
+      - name: Get Public IP from CloudFormation Stack
+        id: get_ip
+        run: |
+          IP=$(aws cloudformation describe-stacks \
+            --stack-name myteststack \
+            --query "Stacks[0].Outputs[?OutputKey=='PublicIP'].OutputValue" \
+            --output text)
+          echo "PUBLIC_IP=$IP" >> $GITHUB_ENV
+
       - name: Run Smoke Test
         run: |
-          echo "Testing http://google.com"
-          curl --fail --connect-timeout 10 --max-time 20 http://google.com || exit 1
+          echo "Testing http://$PUBLIC_IP"
+          curl --fail --connect-timeout 10 --max-time 20 http://$PUBLIC_IP || exit 1
