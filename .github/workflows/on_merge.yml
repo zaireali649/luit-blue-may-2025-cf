@@ -21,4 +21,4 @@ jobs:
 
       - name: Create CloudFormation Stack
         run: |
-          aws cloudformation create-stack --stack-name ec2stackprod --template-body file://ec2.yaml
+          aws cloudformation deploy --stack-name ec2stackprod --template-file ec2.yaml
