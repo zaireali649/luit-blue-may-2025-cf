@@ -21,3 +21,8 @@ jobs:
       - name: Create CloudFormation Stack
         run: |
           aws cloudformation create-stack --stack-name myteststack --template-body file://ec2.yaml
+
+      - name: Run Smoke Test
+        run: |
+          echo "Testing http://google.com"
+          curl --fail --connect-timeout 10 --max-time 20 http://google.com || exit 1
