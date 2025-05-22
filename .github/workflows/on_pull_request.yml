@@ -20,7 +20,7 @@ jobs:
 
       - name: Create CloudFormation Stack
         run: |
-          aws cloudformation deploy --stack-name myteststack --template-body file://ec2.yaml
+          aws cloudformation deploy --stack-name myteststack --template-file ec2.yaml
 
       - name: Get Public IP from CloudFormation Stack
         id: get_ip
