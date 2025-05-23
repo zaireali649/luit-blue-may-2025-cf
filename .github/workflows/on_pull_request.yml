@@ -20,4 +20,18 @@ jobs:
 
       - name: Create CloudFormation Stack
         run: |
-          aws cloudformation create-stack --stack-name myteststack --template-body file://ec2.yaml
+          aws cloudformation deploy --stack-name myteststackbeta --template-file ec2.yaml
+
+      - name: Get Public IP from CloudFormation Stack
+        id: get_ip
+        run: |
+          IP=$(aws cloudformation describe-stacks \
+            --stack-name myteststackbeta \
+            --query "Stacks[0].Outputs[?OutputKey=='InstancePublicIp'].OutputValue" \
+            --output text)
+          echo "PUBLIC_IP=$IP" >> $GITHUB_ENV
+
+      - name: Run Smoke Test
+        run: |
+          echo "Testing http://$PUBLIC_IP"
+          curl --fail --connect-timeout 10 --max-time 20 http://$PUBLIC_IP || exit 1
